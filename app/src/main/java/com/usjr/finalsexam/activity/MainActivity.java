@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.usjr.finalsexam.R;
 import com.usjr.finalsexam.adapters.VideoListAdapter;
@@ -27,17 +28,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //this.showProgressBar();
         ListView listView = (ListView) findViewById(R.id.listView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-
         mController = new VideosController();
         mAdapter = new VideoListAdapter(this, new ArrayList<Video>());
 
         listView.setAdapter(mAdapter);
 
         prepareData();
+        this.hideProgressBar();
         displayListOfVideos();
+
+        listView.setOnItemClickListener(this);
     }
 
     private void prepareData() {
@@ -54,20 +57,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void displayListOfVideos() {
-        // TODO: Implement this method
+        List<Video> videos = VideoTable.getAllVideos(getApplicationContext());
+        mAdapter.addAll(videos);
+
     }
 
     public void showProgressBar() {
         // TODO: Implement this method
+        mProgressBar.setVisibility(View.VISIBLE);
+
     }
 
     public void hideProgressBar() {
-        // TODO: Implement this method
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, PlayVideoActivity.class);
+        intent.putExtra("VID_ID",mAdapter.getItem(position).getId());
         startActivity(intent);
     }
 }
